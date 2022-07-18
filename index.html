@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VUE.JS</title>
+
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div id="app">
+      <div class="wrapper">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col">
+              <p>uid: {{uid}}</p>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <h1>{{ text }}</h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <div class="mb-2">
+                <button
+                  @click="handleAnswerClick('a')"
+                  m-class="btn btn-secondary"
+                  :class="validateAnswerCss('a')"
+                >
+                  A: Vue
+                </button>
+              </div>
+              <div class="mb-2">
+                <button
+                  @click="handleAnswerClick('b')"
+                  m-class="btn btn-secondary"
+                  :class="validateAnswerCss('b')"
+                >
+                  B: React
+                </button>
+              </div>
+              <div class="mb-2">
+                <button
+                  @click="handleAnswerClick('c')"
+                  m-class="btn btn-secondary"
+                  :class="validateAnswerCss('c')"
+                >
+                  C: Angular
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <p>Your answer is: {{clickedAnswer}}</p>
+              <!-- <p>{{successAnswer}}</p> -->
+            </div>
+          </div>
+
+          <div v-if="clickedAnswer === correctAnswer" class="row">
+            <div class="col border bg-success">
+              <p>
+                Gratulacje! Udzieliłeś poprawnej odpowiedzi: {{clickedAnswer}}
+              </p>
+            </div>
+          </div>
+
+          <div
+            v-if="clickedAnswer && clickedAnswer !== correctAnswer"
+            class="row"
+          >
+            <div class="col border bg-danger">
+              <p>Źle! Udzieliłeś NIE poprawnej odpowiedzi: {{clickedAnswer}}</p>
+            </div>
+          </div>
+
+          <p>vote: {{clickedVote}}</p>
+          <div class="row">
+            <div class="col-4">
+              <button
+                @click="handleVoteClick('good')"
+                :style="validateVoteStyle('good')"
+                class="btn btn-success"
+              >
+                Dobrze
+              </button>
+            </div>
+            <div class="col-4">
+              <button
+                @click="handleVoteClick('average')"
+                :style="validateVoteStyle('average')"
+                class="btn btn-warning"
+              >
+                Średnio
+              </button>
+            </div>
+            <div class="col-4">
+              <button
+                @click="handleVoteClick('bad')"
+                :style="validateVoteStyle('bad')"
+                class="btn btn-danger"
+              >
+                Słabo
+              </button>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col">
+              <div class="row">
+                <div class="col">
+                  <h2 just-for-vue class="display-6">
+                    Wszystkie pytania: {{questions.length}}
+                  </h2>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col">
+                  <!-- remove this when getting html for static page  -->
+                  <p just-for-vue v-for="(question, index) in questions">
+                    {{question}}
+                  </p>
+
+                  <!-- remove this when putting html to vue template  -->
+                  <!-- <p just-for-build m-loop="1,2,3,4">question-{{REPLACER}}</p> -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="js.js"></script>
+
+    <script>
+      const CLICKED_ANS = "ans";
+      const CLICKED_VOTE = "vote";
+
+      // USER
+      // const uid = get("uid"),
+      const uid = "ngoersfjowaofjnv0xiokesrnw";
+      // const uid = null;
+
+      // QUESTION
+      const id = "id99";
+      const text = "What is the best javascript framework or library?";
+      const correctAnswer = "b";
+
+      // ALL QUESTIONS
+      const questions = ["quesion-1", "quesion-2", "quesion-3", "quesion-4"];
+    </script>
+    <script>
+      Vue.createApp({
+        // template: `<div>count is {{ uid }}</div>`,
+        data() {
+          return {
+            // USER
+            uid,
+
+            // USER ACTIONS
+            clickedVote: uid ? get(id + CLICKED_VOTE) : null,
+            clickedAnswer: null,
+
+            // QUESTION
+            id,
+            text,
+            correctAnswer,
+
+            // ALL QUESTIONS
+            questions,
+          };
+        },
+        methods: {
+          handleAnswerClick(ans) {
+            this.clickedAnswer = ans;
+          },
+          handleVoteClick(vote) {
+            this.clickedVote = vote;
+          },
+          validateAnswerCss(ans) {
+            if (
+              !this.clickedAnswer ||
+              (ans !== this.clickedAnswer && ans !== this.correctAnswer)
+            ) {
+              return { btn: true, "btn-secondary": true };
+            }
+
+            if (this.clickedAnswer && ans === this.correctAnswer) {
+              return { btn: true, "btn-success": true };
+            }
+
+            if (
+              ans !== this.correctAnswer ||
+              (ans === this.clickedAnswer && ans !== this.correctAnswer)
+            ) {
+              return { btn: true, "btn-danger": true };
+            }
+          },
+          validateVoteStyle(vote) {
+            console.log("validateVoteStyle", this.clickedVote, vote);
+            return { opacity: this.clickedVote === vote ? 1 : 0.3 };
+          },
+          auth() {
+            console.log(`MOUNTED`);
+
+            // setInterval(() => {
+            //   this.uid = "" + Math.random();
+            // }, 2222);
+          },
+        },
+        mounted() {
+          this.auth();
+        },
+        // computed: {
+        //   // readonly
+        //   aDouble() {
+        //     return this.a * 2;
+        //   },
+        // },
+        watch: {
+          // watching top-level property
+          clickedAnswer(ans, prevAns) {
+            save(this.uid, this.id + CLICKED_ANS, ans);
+          },
+          clickedVote(vote, prevVote) {
+            save(this.uid, this.id + CLICKED_VOTE, vote);
+          },
+        },
+      }).mount("#app");
+    </script>
+  </body>
+</html>
